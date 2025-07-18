@@ -60,7 +60,7 @@ model orders {
   book_by_admin_id String?    @db.VarChar(255)
   schedule_id      String     @db.VarChar(255)
   status           String     @db.VarChar(255)
-  total_amount     String     @map("total amount") @db.VarChar(255)
+  total_amount     String     @db.VarChar(255)
   created_at       DateTime?  @db.Timestamp(0)
   updated_at       DateTime?  @db.Timestamp(0)
   deleted_at       DateTime?  @db.Timestamp(0)
@@ -266,17 +266,17 @@ model units {
 }
 
 model users {
-  id                String    @id @db.VarChar(255)
-  is_user           Boolean   @default(true)
-  name              String    @db.VarChar(255)
-  email             String    @unique(map: "users_email_unique") @db.VarChar(255)
-  phone_number      String    @unique(map: "users_phone_number_unique") @db.VarChar(255)
-  is_verified       Boolean
-  verfication_token String?   @db.VarChar(255)
-  password          String    @db.VarChar(255)
-  created_at        DateTime? @db.Timestamp(0)
-  updated_at        DateTime? @db.Timestamp(0)
-  deleted_at        DateTime? @db.Timestamp(0)
-  orders            orders[]
-  tickets           tickets[]
+  id                 String    @id @db.VarChar(255)
+  is_user            Boolean   @default(true)
+  name               String    @db.VarChar(255)
+  email              String    @unique(map: "users_email_unique") @db.VarChar(255)
+  phone_number       String    @unique(map: "users_phone_number_unique") @db.VarChar(255)
+  is_verified        Boolean
+  verification_token String?   @db.VarChar(255)
+  password           String    @db.VarChar(255)
+  created_at         DateTime? @db.Timestamp(0)
+  updated_at         DateTime? @db.Timestamp(0)
+  deleted_at         DateTime? @db.Timestamp(0)
+  orders             orders[]
+  tickets            tickets[]
 }
