@@ -1,0 +1,282 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model admins {
+  id                                     String    @id @db.VarChar(255)
+  name                                   String    @db.VarChar(255)
+  email                                  String    @unique(map: "admins_email_unique") @db.VarChar(255)
+  phone_number                           String    @unique(map: "admins_phone_number_unique") @db.VarChar(255)
+  password                               String    @db.VarChar(255)
+  role                                   String    @db.VarChar(255)
+  updated_by                             String?   @db.VarChar(255)
+  created_by                             String?   @db.VarChar(255)
+  deleted_by                             String?   @db.VarChar(255)
+  created_at                             DateTime? @db.Timestamp(0)
+  updated_at                             DateTime? @db.Timestamp(0)
+  deleted_at                             DateTime? @db.Timestamp(0)
+  admins_admins_created_byToadmins       admins?   @relation("admins_created_byToadmins", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "admins_created_by_foreign")
+  other_admins_admins_created_byToadmins admins[]  @relation("admins_created_byToadmins")
+  admins_admins_deleted_byToadmins       admins?   @relation("admins_deleted_byToadmins", fields: [deleted_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "admins_deleted_by_foreign")
+  other_admins_admins_deleted_byToadmins admins[]  @relation("admins_deleted_byToadmins")
+  admins_admins_updated_byToadmins       admins?   @relation("admins_updated_byToadmins", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "admins_updated_by_foreign")
+  other_admins_admins_updated_byToadmins admins[]  @relation("admins_updated_byToadmins")
+  drivers_drivers_created_byToadmins     drivers[] @relation("drivers_created_byToadmins")
+  drivers_drivers_deleted_byToadmins     drivers[] @relation("drivers_deleted_byToadmins")
+  drivers_drivers_updated_byToadmins     drivers[] @relation("drivers_updated_byToadmins")
+  orders                                 orders[]
+  tickets                                tickets[]
+}
+
+model drivers {
+  id                                String    @id @db.VarChar(255)
+  name                              String    @db.VarChar(255)
+  phone                             String    @unique(map: "drivers_phone_unique") @db.VarChar(255)
+  email                             String    @unique(map: "drivers_email_unique") @db.VarChar(255)
+  password                          String    @db.VarChar(255)
+  status                            String    @db.VarChar(255)
+  created_by                        String?   @db.VarChar(255)
+  updated_by                        String?   @db.VarChar(255)
+  deleted_by                        String?   @db.VarChar(255)
+  created_at                        DateTime? @db.Timestamp(0)
+  updated_at                        DateTime? @db.Timestamp(0)
+  deleted_at                        DateTime? @db.Timestamp(0)
+  admins_drivers_created_byToadmins admins?   @relation("drivers_created_byToadmins", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "drivers_created_by_foreign")
+  admins_drivers_deleted_byToadmins admins?   @relation("drivers_deleted_byToadmins", fields: [deleted_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "drivers_deleted_by_foreign")
+  admins_drivers_updated_byToadmins admins?   @relation("drivers_updated_byToadmins", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "drivers_updated_by_foreign")
+  units                             units[]
+}
+
+model orders {
+  id               String     @id @db.VarChar(255)
+  order_code       String     @db.VarChar(255)
+  user_id          String?    @db.VarChar(255)
+  book_by_admin_id String?    @db.VarChar(255)
+  schedule_id      String     @db.VarChar(255)
+  status           String     @db.VarChar(255)
+  total_amount     String     @map("total amount") @db.VarChar(255)
+  created_at       DateTime?  @db.Timestamp(0)
+  updated_at       DateTime?  @db.Timestamp(0)
+  deleted_at       DateTime?  @db.Timestamp(0)
+  notes            String?    @db.VarChar(255)
+  admins           admins?    @relation(fields: [book_by_admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "orders_book_by_admin_id_foreign")
+  schedules        schedules  @relation(fields: [schedule_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "orders_schedule_id_foreign")
+  users            users?     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "orders_user_id_foreign")
+  payments         payments[]
+}
+
+model payments {
+  id             String    @id @db.VarChar(255)
+  order_id       String    @db.VarChar(255)
+  payment_method String    @db.VarChar(255)
+  payment_status String    @db.VarChar(255)
+  paid_at        DateTime? @db.Timestamp(0)
+  gateway_name   String    @db.VarChar(255)
+  gateway_ref_id String    @db.VarChar(255)
+  amount_paid    Decimal   @db.Decimal(8, 2)
+  payment_url    String?
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+  orders         orders    @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "payments_order_id_foreign")
+}
+
+model point_images {
+  id            String       @id(map: "point_images_pk") @db.VarChar
+  pool_point_id String?      @db.VarChar
+  url           String?      @db.VarChar
+  oder          String?      @db.VarChar
+  is_primary    Boolean?
+  created_at    Boolean?
+  updated_at    DateTime?    @db.Timestamp(6)
+  deleted_at    DateTime?    @db.Timestamp(6)
+  pool_points   pool_points? @relation(fields: [pool_point_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "point_images_pool_points_fk")
+}
+
+model pool_cities {
+  id                                             String        @id @db.VarChar(255)
+  name                                           String        @db.VarChar(255)
+  province                                       String        @db.VarChar(255)
+  code                                           String        @db.VarChar(255)
+  is_active                                      Boolean
+  created_at                                     DateTime?     @db.Timestamp(0)
+  edited_at                                      DateTime?     @db.Timestamp(0)
+  deleted_at                                     DateTime?     @db.Timestamp(0)
+  pool_points                                    pool_points[]
+  routes_routes_destination_city_idTopool_cities routes[]      @relation("routes_destination_city_idTopool_cities")
+  routes_routes_origin_city_idTopool_cities      routes[]      @relation("routes_origin_city_idTopool_cities")
+}
+
+model pool_points {
+  id                                                String         @id @db.VarChar(255)
+  name                                              String         @db.VarChar(255)
+  addres                                            String         @db.VarChar(255)
+  pool_city_id                                      String         @db.VarChar(255)
+  latitude                                          Float
+  longitude                                         Float
+  is_active                                         Boolean
+  created_at                                        DateTime?      @db.Timestamp(0)
+  updated_at                                        DateTime?      @db.Timestamp(0)
+  deleted_at                                        DateTime?      @db.Timestamp(0)
+  point_images                                      point_images[]
+  pool_cities                                       pool_cities    @relation(fields: [pool_city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pool_points_pool_city_id_foreign")
+  routes_point                                      routes_point[]
+  tickets_tickets_destination_point_idTopool_points tickets[]      @relation("tickets_destination_point_idTopool_points")
+  tickets_tickets_origin_point_idTopool_points      tickets[]      @relation("tickets_origin_point_idTopool_points")
+  units                                             units[]
+}
+
+model routes {
+  id                                                  String         @id @db.VarChar(255)
+  name                                                String         @db.VarChar(255)
+  origin_city_id                                      String         @db.VarChar(255)
+  destination_city_id                                 String         @db.VarChar(255)
+  distance                                            Int
+  base_price                                          Float
+  estimated_duration                                  Int
+  description                                         String         @db.VarChar(255)
+  created_at                                          DateTime?      @db.Timestamp(0)
+  updated_at                                          DateTime?      @db.Timestamp(0)
+  deleted_at                                          DateTime?      @db.Timestamp(0)
+  pool_cities_routes_destination_city_idTopool_cities pool_cities    @relation("routes_destination_city_idTopool_cities", fields: [destination_city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "routes_destination_city_id_foreign")
+  schedules                                           schedules      @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "routes_id_foreign")
+  pool_cities_routes_origin_city_idTopool_cities      pool_cities    @relation("routes_origin_city_idTopool_cities", fields: [origin_city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "routes_origin_city_id_foreign")
+  routes_point                                        routes_point[]
+}
+
+model routes_point {
+  id            String      @id @db.VarChar(255)
+  route_id      String      @db.VarChar(255)
+  pool_point_id String      @db.VarChar(255)
+  type          String      @db.VarChar(255)
+  created_at    DateTime?   @db.Timestamp(0)
+  deleted_at    DateTime?   @db.Timestamp(0)
+  pool_points   pool_points @relation(fields: [pool_point_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "routes_point_pool_point_id_foreign")
+  routes        routes      @relation(fields: [route_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "routes_point_route_id_foreign")
+}
+
+model schedules {
+  id             String    @id @db.VarChar(255)
+  trip_code      String    @db.VarChar(255)
+  route_id       String    @db.VarChar(255)
+  unit_id        String    @db.VarChar(255)
+  departure_time DateTime  @db.Timestamp(0)
+  arrival_timet  DateTime  @db.Timestamp(0)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+  deleted_at     DateTime? @db.Timestamp(0)
+  created_by     String?   @db.VarChar(255)
+  updated_by     String?   @db.VarChar(255)
+  notes          String    @db.VarChar(255)
+  orders         orders[]
+  routes         routes?
+  units          units     @relation(fields: [unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "schedules_unit_id_foreign")
+}
+
+model seat_maps {
+  id           String    @id @db.VarChar(255)
+  unit_id      String    @db.VarChar(255)
+  seat_number  String    @db.VarChar(255)
+  class        String    @db.VarChar(255)
+  is_available Boolean
+  created_at   DateTime? @db.Timestamp(0)
+  updated_at   DateTime? @db.Timestamp(0)
+  units        units     @relation(fields: [unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "seat_maps_unit_id_foreign")
+}
+
+model tickets {
+  id                                                    String      @id @db.VarChar(255)
+  order_id                                              String      @db.VarChar(255)
+  schedule_id                                           String      @db.VarChar(255)
+  unit_id                                               String      @db.VarChar(255)
+  trip_code                                             String      @db.VarChar(255)
+  user_id                                               String?     @db.VarChar(255)
+  seat_number                                           String      @db.VarChar(255)
+  origin_point_id                                       String      @db.VarChar(255)
+  destination_point_id                                  String      @db.VarChar(255)
+  price                                                 Int
+  created_at                                            DateTime    @db.Timestamp(0)
+  canceled_at                                           DateTime?   @db.Timestamp(0)
+  is_caneled                                            Boolean
+  booked_by_admin_id                                    String?     @db.VarChar(255)
+  passenger_name                                        String?     @db.VarChar(255)
+  passanger_phone                                       String?     @db.VarChar(255)
+  admins                                                admins?     @relation(fields: [booked_by_admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_booked_by_admin_id_foreign")
+  pool_points_tickets_destination_point_idTopool_points pool_points @relation("tickets_destination_point_idTopool_points", fields: [destination_point_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_destination_point_id_foreign")
+  pool_points_tickets_origin_point_idTopool_points      pool_points @relation("tickets_origin_point_idTopool_points", fields: [origin_point_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_origin_point_id_foreign")
+  units                                                 units       @relation(fields: [unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_unit_id_foreign")
+  users                                                 users?      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_user_id_foreign")
+}
+
+model unit_images {
+  id         String    @id(map: "units_image_pkey") @db.VarChar(255)
+  unit_id    String    @db.VarChar(255)
+  url        String    @db.VarChar(255)
+  order      String    @db.VarChar(255)
+  is_primary Boolean
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  units      units     @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "units_image_id_foreign")
+}
+
+model unit_types {
+  id          String    @id @db.VarChar(255)
+  name        String    @db.VarChar(255)
+  brand       String    @db.VarChar(255)
+  model       String    @db.VarChar(255)
+  type        String    @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  deleted_at  DateTime? @db.Timestamp(0)
+  units       units[]
+}
+
+model units {
+  id              String       @id @db.VarChar(255)
+  unit_types_id   String       @db.VarChar(255)
+  unit_code       String       @unique(map: "units_unit_code_unique") @db.VarChar(255)
+  unit_color      String       @db.VarChar(255)
+  engine_type     String       @db.VarChar(255)
+  service_class   String       @db.VarChar(255)
+  plate_number    String       @db.VarChar(255)
+  seat_count      Int
+  pool_point_id   String       @db.VarChar(255)
+  production_year Int
+  expired_tax     DateTime     @db.Timestamp(0)
+  status          String       @db.VarChar(255)
+  driver_id       String?      @db.VarChar(255)
+  is_active       Boolean
+  created_at      DateTime?    @db.Timestamp(0)
+  updated_at      DateTime?    @db.Timestamp(0)
+  deleted_at      DateTime?    @db.Timestamp(0)
+  schedules       schedules[]
+  seat_maps       seat_maps[]
+  tickets         tickets[]
+  unit_images     unit_images?
+  drivers         drivers?     @relation(fields: [driver_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "units_driver_id_foreign")
+  pool_points     pool_points  @relation(fields: [pool_point_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "units_pool_point_id_foreign")
+  unit_types      unit_types   @relation(fields: [unit_types_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "units_unit_types_id_foreign")
+}
+
+model users {
+  id                String    @id @db.VarChar(255)
+  is_user           Boolean   @default(true)
+  name              String    @db.VarChar(255)
+  email             String    @unique(map: "users_email_unique") @db.VarChar(255)
+  phone_number      String    @unique(map: "users_phone_number_unique") @db.VarChar(255)
+  is_verified       Boolean
+  verfication_token String?   @db.VarChar(255)
+  password          String    @db.VarChar(255)
+  created_at        DateTime? @db.Timestamp(0)
+  updated_at        DateTime? @db.Timestamp(0)
+  deleted_at        DateTime? @db.Timestamp(0)
+  orders            orders[]
+  tickets           tickets[]
+}
