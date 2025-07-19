@@ -7,6 +7,7 @@ import appError from '../../../utils/appError.js';
 import findUniqueUser from '../../../repository/auth/user/find_user_repository.js';
 import createUser from '../../../repository/auth/user/register_repository.js';
 import findUser from '../../../repository/auth/user/find_user_repository.js';
+import sendVerifyEmail from './send_verify_email.js';
 
 
 const regiserUserService = async (data) => {
@@ -49,11 +50,11 @@ const regiserUserService = async (data) => {
         throw new appError('Failed to create user', 500);
     }
 
-    //Todo: send verification email
-    // const emailSent = await sendVerifyemail(user.id, verification_token);
-    // if (!emailSent) {
-    //     throw new appError('Failed to send verification email', 500);
-    // }
+     const emailSent = await sendVerifyEmail(user.email);
+     if (!emailSent) {
+        throw new appError('Failed to send verification email', 500);
+     }
+  
 
     const { id: _id, is_user: _is_user, is_verified: _is_verfied, verification_token: _verfication_token, password: _ps,
         created_at:_, updated_at:__, deleted_at:___ , ...throwData } = user;
