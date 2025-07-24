@@ -12,5 +12,6 @@ const processVerifyEmailController = async (req, res) => {
         errorResponse(res, error.message || 'Internal Server Error', { error: error.message }, error.statusCode || 500);
         
     }
+
 }
 export default processVerifyEmailController;

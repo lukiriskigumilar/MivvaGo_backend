@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider      = "prisma-client-js"
+  output        = "../src/generated/prisma"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -86,18 +87,6 @@ model payments {
   orders         orders    @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "payments_order_id_foreign")
 }
 
-model point_images {
-  id            String       @id(map: "point_images_pk") @db.VarChar
-  pool_point_id String?      @db.VarChar
-  url           String?      @db.VarChar
-  oder          String?      @db.VarChar
-  is_primary    Boolean?
-  created_at    Boolean?
-  updated_at    DateTime?    @db.Timestamp(6)
-  deleted_at    DateTime?    @db.Timestamp(6)
-  pool_points   pool_points? @relation(fields: [pool_point_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "point_images_pool_points_fk")
-}
-
 model pool_cities {
   id                                             String        @id @db.VarChar(255)
   name                                           String        @db.VarChar(255)
@@ -113,21 +102,21 @@ model pool_cities {
 }
 
 model pool_points {
-  id                                                String         @id @db.VarChar(255)
-  name                                              String         @db.VarChar(255)
-  addres                                            String         @db.VarChar(255)
-  pool_city_id                                      String         @db.VarChar(255)
+  id                                                String              @id @db.VarChar(255)
+  name                                              String              @db.VarChar(255)
+  addres                                            String              @db.VarChar(255)
+  pool_city_id                                      String              @db.VarChar(255)
   latitude                                          Float
   longitude                                         Float
   is_active                                         Boolean
-  created_at                                        DateTime?      @db.Timestamp(0)
-  updated_at                                        DateTime?      @db.Timestamp(0)
-  deleted_at                                        DateTime?      @db.Timestamp(0)
-  point_images                                      point_images[]
-  pool_cities                                       pool_cities    @relation(fields: [pool_city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pool_points_pool_city_id_foreign")
+  created_at                                        DateTime?           @db.Timestamp(0)
+  updated_at                                        DateTime?           @db.Timestamp(0)
+  deleted_at                                        DateTime?           @db.Timestamp(0)
+  pool_point_images                                 pool_point_images[]
+  pool_cities                                       pool_cities         @relation(fields: [pool_city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pool_points_pool_city_id_foreign")
   routes_point                                      routes_point[]
-  tickets_tickets_destination_point_idTopool_points tickets[]      @relation("tickets_destination_point_idTopool_points")
-  tickets_tickets_origin_point_idTopool_points      tickets[]      @relation("tickets_origin_point_idTopool_points")
+  tickets_tickets_destination_point_idTopool_points tickets[]           @relation("tickets_destination_point_idTopool_points")
+  tickets_tickets_origin_point_idTopool_points      tickets[]           @relation("tickets_origin_point_idTopool_points")
   units                                             units[]
 }
 
@@ -214,7 +203,7 @@ model tickets {
 }
 
 model unit_images {
-  id         String    @id(map: "units_image_pkey") @db.VarChar(255)
+  id         String    @id @db.VarChar(255)
   unit_id    String    @db.VarChar(255)
   url        String    @db.VarChar(255)
   order      String    @db.VarChar(255)
@@ -279,4 +268,16 @@ model users {
   deleted_at         DateTime? @db.Timestamp(0)
   orders             orders[]
   tickets            tickets[]
+}
+
+model pool_point_images {
+  id            String       @id(map: "pool_point_images_pk") @db.VarChar
+  pool_point_id String?      @db.VarChar
+  url           String?      @db.VarChar
+  order         String?      @db.VarChar
+  is_primary    String?      @db.VarChar
+  created_at    DateTime?    @db.Timestamp(6)
+  updated_at    DateTime?    @db.Timestamp(6)
+  deleted_at    DateTime?    @db.Timestamp(6)
+  pool_points   pool_points? @relation(fields: [pool_point_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pool_point_images_pool_points_fk")
 }
