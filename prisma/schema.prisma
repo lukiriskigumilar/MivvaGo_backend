@@ -255,19 +255,20 @@ model units {
 }
 
 model users {
-  id                 String    @id @db.VarChar(255)
-  is_user            Boolean   @default(true)
-  name               String    @db.VarChar(255)
-  email              String    @unique(map: "users_email_unique") @db.VarChar(255)
-  phone_number       String    @unique(map: "users_phone_number_unique") @db.VarChar(255)
+  id                 String         @id @db.VarChar(255)
+  is_user            Boolean        @default(true)
+  name               String         @db.VarChar(255)
+  email              String         @unique(map: "users_email_unique") @db.VarChar(255)
+  phone_number       String         @unique(map: "users_phone_number_unique") @db.VarChar(255)
   is_verified        Boolean
-  verification_token String?   @db.VarChar(255)
-  password           String    @db.VarChar(255)
-  created_at         DateTime? @db.Timestamp(0)
-  updated_at         DateTime? @db.Timestamp(0)
-  deleted_at         DateTime? @db.Timestamp(0)
+  verification_token String?        @db.VarChar(255)
+  password           String         @db.VarChar(255)
+  created_at         DateTime?      @db.Timestamp(0)
+  updated_at         DateTime?      @db.Timestamp(0)
+  deleted_at         DateTime?      @db.Timestamp(0)
   orders             orders[]
   tickets            tickets[]
+  user_session       user_session[]
 }
 
 model pool_point_images {
@@ -280,4 +281,18 @@ model pool_point_images {
   updated_at    DateTime?    @db.Timestamp(6)
   deleted_at    DateTime?    @db.Timestamp(6)
   pool_points   pool_points? @relation(fields: [pool_point_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pool_point_images_pool_points_fk")
+}
+
+model user_session {
+  id                   String    @unique(map: "user_session_unique") @db.VarChar(255)
+  user_id              String?   @db.VarChar(255)
+  refresh_token        String?   @db.VarChar(255)
+  device               String?
+  ip_address           String?
+  user_agent           Json?
+  refresh_token_expiry DateTime? @db.Timestamp(6)
+  is_revoked           Boolean?  @default(false)
+  created_at           DateTime? @db.Timestamp(6)
+  access_token         String?   @db.VarChar
+  users                users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_session_users_fk")
 }
