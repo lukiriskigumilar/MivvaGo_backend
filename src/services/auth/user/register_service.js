@@ -10,7 +10,7 @@ import findUser from '../../../repository/auth/user/find_user_repository.js';
 import sendVerifyEmail from './send_verify_email.js';
 
 
-const regiserUserService = async (data) => {
+const registerUserService = async (data) => {
     const id = uuidv4();
     const {
         name,
@@ -29,16 +29,16 @@ const regiserUserService = async (data) => {
         ]
     }
 
-    const exsitingUser = await findUser(whereClause);
-    if (exsitingUser) {
-        const conflictFields = exsitingUser.email === email ? 'email' : 'phone number';
+    const existingUser = await findUser(whereClause);
+    if (existingUser) {
+        const conflictFields = existingUser.email === email ? 'email' : 'phone number';
         throw new appError(`User with this ${conflictFields} already exists`, 409);
     }
 
     const saveData = {
         id,
         name,
-        email,
+        email:email.toLowerCase(),
         phone_number,
         password: hashedPassword,
         is_verified,
@@ -64,4 +64,4 @@ const regiserUserService = async (data) => {
 
 }
 
-export default regiserUserService;
+export default registerUserService;
