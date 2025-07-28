@@ -1,5 +1,7 @@
 import joi from 'joi';
 
+
+
 const registerSchema = joi.object({
     name: joi.string().min(3).max(50).required(),
     email: joi.string().email().required(),
@@ -12,7 +14,15 @@ const resendVerifyEmailSchema = joi.object({
     email: joi.string().email().required(),
 })
 
+const loginVerifySchema = joi.object(
+    {
+        email: joi.string().required(),
+        password: joi.string().required()
+    }
+)
+
 export default {
     registerSchema,
     resendVerifyEmailSchema,
+    loginVerifySchema,
 }
