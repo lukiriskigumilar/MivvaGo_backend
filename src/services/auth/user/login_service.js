@@ -22,7 +22,10 @@ const loginUserService = async (userData, useragent, ipAddress) => {
     throw new AppError("Incorrect password", 401);
   }
   if (user.is_verified === false) {
-    throw new AppError("User is not verified please verfied your account", 403);
+    throw new AppError("User is not verified please verified your account", 403);
+  }
+  if (user.deleted_at){
+    throw new AppError("Your account has been deleted", 404)
   }
   const accessToken = jwt.sign(
     {
