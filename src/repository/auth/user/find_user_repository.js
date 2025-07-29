@@ -1,4 +1,4 @@
-import prisma from "../../../models/prisma/client.js";
+import prisma from "../../../config/prisma/client.js";
 
 const findUser = async (WhereClause) => {
     return await prisma.users.findFirst({
