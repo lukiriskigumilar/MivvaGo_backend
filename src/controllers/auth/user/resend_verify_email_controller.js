@@ -1,4 +1,4 @@
-import { successResponse, errorResponse } from "../../../utils/custome_response.js";
+import { successResponse, errorResponse } from "../../../utils/custom_response.js";
 import sendVerifyEmail from "../../../services/auth/user/send_verify_email.js";
 
 const resendVerifyEmailController = async (req, res) => {

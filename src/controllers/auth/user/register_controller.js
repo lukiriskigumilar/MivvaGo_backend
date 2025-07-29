@@ -1,6 +1,6 @@
 
 import registerUserService from "../../../services/auth/user/register_service.js";
-import {successResponse, errorResponse} from '../../../utils/custome_response.js';
+import {successResponse, errorResponse} from '../../../utils/custom_response.js';
 
 const registerUserController = async (req,res) =>{
     const data = req.body;

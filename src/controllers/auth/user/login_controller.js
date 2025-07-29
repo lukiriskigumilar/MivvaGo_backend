@@ -1,5 +1,5 @@
 
-import { successResponse,errorResponse } from "../../../utils/custome_response.js";
+import { successResponse,errorResponse } from "../../../utils/custom_response.js";
 import loginUserService from "../../../services/auth/user/login_service.js";
 
 const loginController = async (req, res) => {
