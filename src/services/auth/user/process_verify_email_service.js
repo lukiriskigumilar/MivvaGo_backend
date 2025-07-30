@@ -12,7 +12,7 @@ const processVerifyEmailService = async (token) => {
     }
     const user = await findUser(whereClause);
     if (!user) {
-        throw new AppError('Token vailed user not found', 404);
+        throw new AppError('user not found or token expired', 404);
     }
     if (user.is_verified) {
         throw new AppError('User is already verified', 400);
