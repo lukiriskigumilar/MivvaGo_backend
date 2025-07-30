@@ -81,6 +81,7 @@ const validateCredentialUser = async (req, res , next) =>{
       return errorResponse(res, "Token has been blacklisted", { error: "blacklisted_token" }, 401);
     }
     req.user = decode
+    req.accessToken = accessToken
     next()
 
   } catch (error) {
