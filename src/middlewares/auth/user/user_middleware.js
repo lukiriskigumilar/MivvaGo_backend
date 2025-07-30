@@ -76,7 +76,7 @@ const validateCredentialUser = async (req, res , next) =>{
   }
   try {
     const decode = await jwt.verify(accessToken, process.env.JWT_SECRET); 
-    const isBlackListed = await redisClient.slsMember('blacklist_access_token', accessToken);
+    const isBlackListed = await redisClient.get(`blacklist_access_token:${accessToken}`)
     if(isBlackListed){
       return errorResponse(res, "Token has been blacklisted", { error: "blacklisted_token" }, 401);
     }
