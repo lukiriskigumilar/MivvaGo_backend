@@ -3,7 +3,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import authValidator from "../user/user_validator.js";
-import { errorResponse } from "../../../utils/custome_response.js";
+import { errorResponse } from "../../../utils/custom_response.js";
+import redisClient from "../../../config/redis/redis.js";
+import AppError from "../../../utils/appError.js";
 
 
 const validateUserRegistration = (req, res, next) => {
@@ -40,6 +42,7 @@ const validateResendVerifyEmail = (req, res, next) => {
   next();
 };
 
+
 const validateLoginEmail = (req, res, next) => {
   const { error } = authValidator.loginVerifySchema.validate(req.body, {
     abortEarly: false,
@@ -66,8 +69,31 @@ const validateLoginEmail = (req, res, next) => {
   }
 };
 
+const validateCredentialUser = async (req, res , next) =>{
+  const accessToken = req.cookies.accessToken; 
+  if(!accessToken){
+    return errorResponse(res,"AccessToken is Required", {error:"Missing accessToken"}, 401)
+  }
+  try {
+    const decode = await jwt.verify(accessToken, process.env.JWT_SECRET); 
+    
+    req.user = decode
+    next()
+
+  } catch (error) {
+    if (error.name === 'TokenExpiredError'){
+      errorResponse(res, "Token expired", {error:"Token expired"}, 401)
+    }else{
+      errorResponse(res, "Invalid Token", {error:"Invalid_token"}, 401)
+    }
+    
+  }
+
+}
+
 export default {
   validateUserRegistration,
   validateResendVerifyEmail,
   validateLoginEmail,
+  validateCredentialUser,
 };
