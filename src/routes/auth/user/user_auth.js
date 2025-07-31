@@ -1,24 +1,48 @@
-import express from 'express';
+import express from "express";
 
-import registerUserController from '../../../controllers/auth/user/register_controller.js';
-import resendVerifyEmailController from '../../../controllers/auth/user/resend_verify_email_controller.js';
-import processVerifyEmailController from '../../../controllers/auth/user/process_verify_email_controller.js';
-import loginController from '../../../controllers/auth/user/login_controller.js';
-import detailUserController from '../../../controllers/auth/user/detail_user_controller.js';
-import logoutUserController from '../../../controllers/auth/user/logout_user_controller.js';
-import manageUserSessionController from '../../../controllers/auth/user/manage_user_session_controller.js';
-
-import authMiddlewareUser from '../../../middlewares/auth/user/user_middleware.js';
-
+import registerUserController from "../../../controllers/auth/user/register_controller.js";
+import resendVerifyEmailController from "../../../controllers/auth/user/resend_verify_email_controller.js";
+import processVerifyEmailController from "../../../controllers/auth/user/process_verify_email_controller.js";
+import loginController from "../../../controllers/auth/user/login_controller.js";
+import detailUserController from "../../../controllers/auth/user/detail_user_controller.js";
+import logoutUserController from "../../../controllers/auth/user/logout_user_controller.js";
+import manageUserSessionController from "../../../controllers/auth/user/manage_user_session_controller.js";
+import logoutUserSessionByIdController from "../../../controllers/auth/user/logout_user_session_byId.js";
+import authMiddlewareUser from "../../../middlewares/auth/user/user_middleware.js";
 
 const router = express.Router();
 
-router.post('/register', authMiddlewareUser.validateUserRegistration, registerUserController); 
-router.post('/resend-verify-email', authMiddlewareUser.validateResendVerifyEmail, resendVerifyEmailController)
-router.get('/verify-email/:token', processVerifyEmailController);
-router.post('/login',authMiddlewareUser.validateLoginEmail, loginController)
-router.get('/detail-user',authMiddlewareUser.validateCredentialUser,detailUserController)
-router.get('/active-session', authMiddlewareUser.validateCredentialUser, manageUserSessionController)
-router.post('/logout', authMiddlewareUser.validateCredentialUser,logoutUserController)
+router.post(
+  "/register",
+  authMiddlewareUser.validateUserRegistration,
+  registerUserController
+);
+router.post(
+  "/resend-verify-email",
+  authMiddlewareUser.validateResendVerifyEmail,
+  resendVerifyEmailController
+);
+router.get("/verify-email/:token", processVerifyEmailController);
+router.post("/login", authMiddlewareUser.validateLoginEmail, loginController);
+router.get(
+  "/detail-user",
+  authMiddlewareUser.validateCredentialUser,
+  detailUserController
+);
+router.get(
+  "/active-session",
+  authMiddlewareUser.validateCredentialUser,
+  manageUserSessionController
+);
+router.post(
+  "/active-session/logout/:id",
+  authMiddlewareUser.validateCredentialUser,
+  logoutUserSessionByIdController
+);
+router.post(
+  "/logout",
+  authMiddlewareUser.validateCredentialUser,
+  logoutUserController
+);
 
 export default router;

@@ -4,13 +4,22 @@ import updateSessionUserRepository from "../../../repository/auth/user/update_se
 import AppError from "../../../utils/appError.js";
 import { createCookieString } from "../../../utils/cookie_helper.js";
 
-const logoutSessionUserService = async (accessToken) => {
-  const findUser = {
-   access_token:accessToken
-  }
-  const sessionUser = await findSessionUserRepository(findUser);
-  if (!sessionUser) {
-    throw new AppError("You're not logged in.", 401);
+const logoutSessionUserService = async (accessToken, id_session, id_user) => {
+   let sessionUser;
+
+  if (!accessToken && id_session) {
+    const whereClause = {
+      id:id_session, 
+      user_id:id_user
+    }
+    sessionUser = await findSessionUserRepository(whereClause);
+    if (!sessionUser) throw new AppError("Session not found", 404);
+    accessToken = sessionUser.access_token;
+  } else if (accessToken) {
+    sessionUser = await findSessionUserRepository({ access_token: accessToken });
+    if (!sessionUser) throw new AppError("You're not logged in.", 401);
+  } else {
+    throw new AppError("Access token or session ID required", 400);
   }
   const dataToUpdate = {
     is_revoked: true,
@@ -28,27 +37,27 @@ const logoutSessionUserService = async (accessToken) => {
     ttlInSecond
   );
 
-  const deletedAccessToken = createCookieString("accessToken","",{
-    maxAge:0,
+  const deletedAccessToken = createCookieString("accessToken", "", {
+    maxAge: 0,
     httpOnly: true,
     secure: true,
     path: "/",
     sameSite: "strict",
-  })
-  const deletedRefreshToken = createCookieString("refreshToken","",{
-    maxAge:0,
+  });
+  const deletedRefreshToken = createCookieString("refreshToken", "", {
+    maxAge: 0,
     httpOnly: true,
     secure: true,
     path: "/",
     sameSite: "strict",
-  })
+  });
 
   if (updateSession && insertBlacklistAccessToken === "OK") {
     return {
-        deletedAccessToken,
-        deletedRefreshToken,
-        statusCode: 200,
-        message: "Logout successful. Access token has been blacklisted.",
+      deletedAccessToken,
+      deletedRefreshToken,
+      statusCode: 200,
+      message: "Logout successful. Access token has been blacklisted.",
     };
   } else {
     throw new AppError("Logout failed due to a server error.", 500);

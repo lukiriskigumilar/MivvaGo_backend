@@ -42,7 +42,6 @@ const validateResendVerifyEmail = (req, res, next) => {
   next();
 };
 
-
 const validateLoginEmail = (req, res, next) => {
   const { error } = authValidator.loginVerifySchema.validate(req.body, {
     abortEarly: false,
@@ -99,5 +98,5 @@ export default {
   validateUserRegistration,
   validateResendVerifyEmail,
   validateLoginEmail,
-  validateCredentialUser,
+  validateCredentialUser
 };
