@@ -8,10 +8,11 @@
 const validateContentType = (req, res, next) => {
     const method = req.method; 
     const contentType = req.headers['content-type'];
+     const hasBodyContent = req.body && Object.keys(req.body).length > 0;
 
     const methodsToCheck = ['POST', 'PUT', 'PATCH'];
 
-    if(methodsToCheck.includes(method)){
+    if(methodsToCheck.includes(method) && hasBodyContent){
         if(!contentType || !contentType.includes('application/json')) {
             return res.status(415).json({
                 statusCode: 415,
