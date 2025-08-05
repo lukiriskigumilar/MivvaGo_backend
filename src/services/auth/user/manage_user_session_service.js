@@ -1,7 +1,7 @@
 import findSessionUserRepository from "../../../repository/auth/user/find_session_user_repository.js";
 import AppError from "../../../utils/appError.js";
 
-const getManageUserSessionService = async (id_user) => {
+const getManageUserSessionService = async (id_user,accessToken) => {
   const WhereClause = {
     user_id: id_user,
     is_revoked: false,
@@ -9,7 +9,8 @@ const getManageUserSessionService = async (id_user) => {
   const isMany = true
   const findListSession = await findSessionUserRepository(WhereClause,isMany );
 
-  const mappedSessions = findListSession.map((session) => ({
+  const mappedSessions = findListSession.map((session) => (
+    {
     id: session.id,
     device: session.device,
     ip_address: session.ip_address,
@@ -19,6 +20,7 @@ const getManageUserSessionService = async (id_user) => {
       browser: session.user_agent.browser,
       version: session.user_agent.version,
     },
+    this_device:session.access_token === accessToken
   }));
   
   if (!findListSession || findListSession.length === 0) {
