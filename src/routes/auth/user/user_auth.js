@@ -8,8 +8,8 @@ import detailUserController from "../../../controllers/auth/user/detail_user_con
 import logoutUserController from "../../../controllers/auth/user/logout_user_controller.js";
 import manageUserSessionController from "../../../controllers/auth/user/manage_user_session_controller.js";
 import logoutUserSessionByIdController from "../../../controllers/auth/user/logout_user_session_byId.js";
+import generateUserAccessTokenController from "../../../controllers/auth/user/generate_user_accessToken_cotroller.js";
 import authMiddlewareUser from "../../../middlewares/auth/user/user_middleware.js";
-
 const router = express.Router();
 
 router.post(
@@ -24,6 +24,7 @@ router.post(
 );
 router.get("/verify-email/:token", processVerifyEmailController);
 router.post("/login", authMiddlewareUser.validateLoginEmail, loginController);
+router.post("/generate-accessToken",authMiddlewareUser.validateGetAccessToken,generateUserAccessTokenController )
 router.get(
   "/detail-user",
   authMiddlewareUser.validateCredentialUser,
@@ -41,7 +42,7 @@ router.post(
 );
 router.post(
   "/logout",
-  authMiddlewareUser.validateCredentialUser,
+  authMiddlewareUser.validateLogoutUser,
   logoutUserController
 );
 

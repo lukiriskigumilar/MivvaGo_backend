@@ -57,7 +57,7 @@ const logoutSessionUserService = async (accessToken, id_session, id_user) => {
       deletedAccessToken,
       deletedRefreshToken,
       statusCode: 200,
-      message: "Logout successful. Access token has been blacklisted.",
+      message: "Logout success. Access token has been blacklisted.",
     };
   } else {
     throw new AppError("Logout failed due to a server error.", 500);

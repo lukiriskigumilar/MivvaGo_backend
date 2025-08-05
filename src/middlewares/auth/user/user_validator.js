@@ -11,7 +11,7 @@ const registerSchema = joi.object({
 })
 
 const resendVerifyEmailSchema = joi.object({
-    email: joi.string().email().required(),
+    email: joi.string().email().required()
 })
 
 const loginVerifySchema = joi.object(
