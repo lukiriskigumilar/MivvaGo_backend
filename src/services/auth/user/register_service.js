@@ -8,6 +8,7 @@ import findUniqueUser from '../../../repository/auth/user/find_user_repository.j
 import createUser from '../../../repository/auth/user/register_repository.js';
 import findUser from '../../../repository/auth/user/find_user_repository.js';
 import sendVerifyEmail from './send_verify_email.js';
+import { number } from 'joi';
 
 
 const registerUserService = async (data) => {
@@ -18,7 +19,7 @@ const registerUserService = async (data) => {
         phone_number,
         password
     } = data;
-    const hashedPassword = await bcrypt.hash(password, 15);
+    const hashedPassword = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
     const is_verified = false;
     const verification_token = uuidv4();
     const created_at = new Date();
