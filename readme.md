@@ -7,10 +7,17 @@ It is developed using the **Express.js** framework and aims to provide APIs for 
 Currently, the project is **under construction**. Features and detailed documentation will be added progressively.
 
 ---
+## 📄 temporary documentation
+🔗 [MIVVA GO Backend Documentation](https://short.lukiriski.my.id/MIVVA_GO_backend_doc)
 
 ### ⚙️ Technology Stack
 - Node.js
 - Express.js
+- PostgreSQL
+- Prisma
+- JavaScript
+- Redis
+
 
 ---
 
