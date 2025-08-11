@@ -9,6 +9,8 @@ import logoutUserController from "../../../controllers/auth/user/logout_user_con
 import manageUserSessionController from "../../../controllers/auth/user/manage_user_session_controller.js";
 import logoutUserSessionByIdController from "../../../controllers/auth/user/logout_user_session_byId.js";
 import generateUserAccessTokenController from "../../../controllers/auth/user/generate_user_accessToken_cotroller.js";
+import resetPasswordUserController from "../../../controllers/auth/user/reset_password_user_controller.js";
+
 import authMiddlewareUser from "../../../middlewares/auth/user/user_middleware.js";
 const router = express.Router();
 
@@ -44,6 +46,12 @@ router.post(
   "/logout",
   authMiddlewareUser.validateLogoutUser,
   logoutUserController
+);
+router.post(
+  "/reset-password",
+  authMiddlewareUser.validateChangePassword,
+  authMiddlewareUser.validateCredentialUser,
+  resetPasswordUserController
 );
 
 export default router;

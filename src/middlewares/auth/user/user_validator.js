@@ -21,8 +21,21 @@ const loginVerifySchema = joi.object(
     }
 )
 
+const changePasswordSchema = joi.object(
+    {
+        old_password: joi.string().required(), 
+        new_password: joi.string().min(6).required(),
+        confirm_password: joi.string().valid(joi.ref('new_password')).required().
+        messages({
+            'any.only': 'Confirm password must match the new password'
+        })
+
+    }
+)
+
 export default {
     registerSchema,
     resendVerifyEmailSchema,
     loginVerifySchema,
+    changePasswordSchema
 }

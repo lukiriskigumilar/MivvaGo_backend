@@ -9,6 +9,8 @@ import AppError from "../../../utils/appError.js";
 import findSessionUserRepository from "../../../repository/auth/user/find_session_user_repository.js";
 import cookieParser from "cookie-parser";
 
+
+// Middleware check input validation
 const validateUserRegistration = (req, res, next) => {
   const { error } = authValidator.registerSchema.validate(req.body, {
     abortEarly: false,
@@ -42,6 +44,24 @@ const validateResendVerifyEmail = (req, res, next) => {
   next();
 };
 
+const validateChangePassword = (req, res, next) =>  {
+  const { error } = authValidator.changePasswordSchema.validate(req.body, {
+    abortEarly: false,
+  });
+  if (error) {
+    const errorMessages = error.details.map((detail) => detail.message);
+    return errorResponse(
+      res,
+      "Validation Fields Error",
+      { error_fields: errorMessages },
+      400
+    );
+  }
+  next();
+};
+
+
+// Middleware check non input validation
 const validateLoginEmail = (req, res, next) => {
   const { error } = authValidator.loginVerifySchema.validate(req.body, {
     abortEarly: false,
@@ -147,10 +167,16 @@ const validateLogoutUser = async (req, res, next) => {
 };
 
 export default {
+  //check input validation
   validateUserRegistration,
   validateResendVerifyEmail,
+  validateChangePassword,
+
+  //check non input validation
   validateLoginEmail,
-  validateCredentialUser,
   validateGetAccessToken,
+  validateCredentialUser,
   validateLogoutUser,
+
+
 };
