@@ -7,7 +7,7 @@ import cors from 'cors';
 dotenv.config();
 
 import userAuthRoutes from './src/routes/auth/user/user_auth.js';
-import validateContentTypeOnlyJson from './src/middlewares/validateContentType.js';
+import {validateContentType,jsonErrorHandler,jsonParser} from './src/middlewares/validateContentType.js';
 
 
 const app = express();
@@ -15,7 +15,9 @@ const PORT = process.env.PORT || 4000;
 
 // Middleware to validate content type
 // This middleware checks if the request's Content-Type is application/json for specific HTTP methods
-app.use(validateContentTypeOnlyJson);
+app.use(validateContentType);
+app.use(jsonParser);
+app.use(jsonErrorHandler);
 
 app.use(express.json());
 app.use(helmet());
