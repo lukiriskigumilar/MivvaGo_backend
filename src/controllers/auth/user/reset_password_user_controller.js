@@ -6,9 +6,15 @@ const resetPasswordUserController = async (req,res) =>{
 
     try {
         const result = await resetPasswordUserService(userId,data)
-        if(result){
+        if(!result.deletedAccessToken){
          successResponse(res,"Password change Successfully", null, 200);
+            return;
         }
+        res.setHeader("Set-Cookie", [
+          result.deletedAccessToken
+        ]);
+        successResponse(res, "Password reset successfully, all devices logged out", null, 200);
+
     } catch (error) {
         errorResponse(res, error.message || 'Internal Server Error', { error: error.message }, error.statusCode || 500);  
     }
