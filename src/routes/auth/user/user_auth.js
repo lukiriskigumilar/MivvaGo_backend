@@ -10,8 +10,10 @@ import manageUserSessionController from "../../../controllers/auth/user/manage_u
 import logoutUserSessionByIdController from "../../../controllers/auth/user/logout_user_session_byId.js";
 import generateUserAccessTokenController from "../../../controllers/auth/user/generate_user_accessToken_cotroller.js";
 import resetPasswordUserController from "../../../controllers/auth/user/reset_password_user_controller.js";
+import confirmForgetPasswordController from "../../../controllers/auth/user/confirm_forget_password_controller.js";
 
 import authMiddlewareUser from "../../../middlewares/auth/user/user_middleware.js";
+import sendForgetPasswordMailController from "../../../controllers/auth/user/send_forget_password_mail_controller.js";
 const router = express.Router();
 
 router.post(
@@ -53,5 +55,16 @@ router.post(
   authMiddlewareUser.validateCredentialUser,
   resetPasswordUserController
 );
+
+router.post(
+  "/forget-password",
+  sendForgetPasswordMailController,
+)
+
+router.post(
+  "/confirm-forget-password",
+  authMiddlewareUser.validateConfirmForgetPassword,
+  confirmForgetPasswordController
+)
 
 export default router;

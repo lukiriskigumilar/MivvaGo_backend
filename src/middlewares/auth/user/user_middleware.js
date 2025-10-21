@@ -60,6 +60,22 @@ const validateChangePassword = (req, res, next) =>  {
   next();
 };
 
+const validateConfirmForgetPassword = (req, res, next) => {
+  const {error} = authValidator.confirmForgetPasswordScheme.validate(req.body, {
+    abortEarly: false,
+  });
+  if (error) {
+    const errorMessages = error.details.map((detail) => detail.message);
+    return errorResponse(
+      res,
+      "Validation Fields Error",
+      { error_fields: errorMessages },
+      400
+    );
+  }
+  next();
+}
+
 
 // Middleware check non input validation
 const validateLoginEmail = (req, res, next) => {
@@ -171,6 +187,7 @@ export default {
   validateUserRegistration,
   validateResendVerifyEmail,
   validateChangePassword,
+  validateConfirmForgetPassword,
 
   //check non input validation
   validateLoginEmail,
