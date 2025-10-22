@@ -5,18 +5,20 @@ import AppError from "../../../utils/appError.js";
 import { createCookieString } from "../../../utils/cookie_helper.js";
 
 const logoutSessionUserService = async (accessToken, id_session, id_user) => {
-   let sessionUser;
+  let sessionUser;
 
   if (!accessToken && id_session) {
     const whereClause = {
-      id:id_session, 
-      user_id:id_user
-    }
+      id: id_session,
+      user_id: id_user,
+    };
     sessionUser = await findSessionUserRepository(whereClause);
     if (!sessionUser) throw new AppError("Session not found", 404);
     accessToken = sessionUser.access_token;
   } else if (accessToken) {
-    sessionUser = await findSessionUserRepository({ access_token: accessToken });
+    sessionUser = await findSessionUserRepository({
+      access_token: accessToken,
+    });
     if (!sessionUser) throw new AppError("You're not logged in.", 401);
   } else {
     throw new AppError("Access token or session ID required", 400);
@@ -33,8 +35,9 @@ const logoutSessionUserService = async (accessToken, id_session, id_user) => {
   const insertBlacklistAccessToken = await redisClient.set(
     `blacklist_access_token:${accessToken}`,
     "1",
-    "EX",
-    ttlInSecond
+    {
+      EX: ttlInSecond,
+    }
   );
 
   const deletedAccessToken = createCookieString("accessToken", "", {
