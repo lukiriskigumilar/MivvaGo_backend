@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-import authValidator from "../user/user_validator.js";
+import authValidator from "./user_validator.js";
 import { errorResponse } from "../../../utils/custom_response.js";
 import redisClient from "../../../config/redis/redis.js";
 import AppError from "../../../utils/appError.js";
